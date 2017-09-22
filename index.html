@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+     <style>
+       canvas{
+         /*border: 1px solid red*/
+         background-image: url('IMG_0031.jpg');
+        }
+     </style>
+</head>
+<body>
+  <canvas width="500" height="500"></canvas>
+</body>
+</html>
+<script type="text/javascript" src="./jquery-2.1.4.js"></script>
+<script>
+    var canvas =document.querySelector('canvas');
+    var ctx =canvas.getContext('2d');
+
+
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.globalCompositeOperation="destination-out";
+    $('canvas').on('mousedown',function(){
+      $('canvas').on('mousemove',function(e){
+
+        var x = e.pageX-canvas.offsetLeft;
+        var y = e.pageY-canvas.offsetTop;
+
+        ctx.beginPath();
+        ctx.arc(x,y,30,0,2*Math.PI);
+        ctx.fill();
+        
+      })
+    }).on('mouseup',function(){
+      $("canvas").off("mousemove");
+    })
+
+
+</script>
