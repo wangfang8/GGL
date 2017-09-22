@@ -1,41 +1,69 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <title>title</title>
-     <style>
-       canvas{
-         /*border: 1px solid red*/
-         background-image: url('IMG_0031.jpg');
-        }
-     </style>
+  <meta charset="UTF-8">
+  <title>title</title>
+  <style>
+    canvas {
+      border: 1px solid red;
+      background-image: url('IMG_0031.jpg');
+      /*background-color: #fa5a5a;*/
+    }
+  </style>
 </head>
+
 <body>
   <canvas width="500" height="500"></canvas>
 </body>
+
 </html>
 <script type="text/javascript" src="./jquery-2.1.4.js"></script>
 <script>
-    var canvas =document.querySelector('canvas');
-    var ctx =canvas.getContext('2d');
+  var canvas = document.querySelector('canvas');
+  var ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = 'gray';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.globalCompositeOperation = 'destination-out';
 
 
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.globalCompositeOperation="destination-out";
-    $('canvas').on('mousedown',function(){
-      $('canvas').on('mousemove',function(e){
+  //鼠标按下的时候获取当前点击的坐标 
+  //移动的时候时时的获取位置
+  $(canvas).on('mousedown', function () {
+    $(this).on('mousemove', function (e) {
+      
+      var dataImg = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      console.log(dataImg);
+      var data = dataImg.data;
+      var count = 0;
+      for(var i=0;i<data.length;i+=4){
+        if(data[i]==0&&data[i+1]==0&&data[i+2]==0&&data[i+3]==0){
+          count++;
+        }
+      }
+      if(count>(canvas.width*canvas.height)/2){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
 
-        var x = e.pageX-canvas.offsetLeft;
-        var y = e.pageY-canvas.offsetTop;
 
-        ctx.beginPath();
-        ctx.arc(x,y,30,0,2*Math.PI);
-        ctx.fill();
-        
-      })
-    }).on('mouseup',function(){
-      $("canvas").off("mousemove");
+      //移动的时候获取鼠标在画布内的坐标
+      var x = e.pageX - canvas.offsetLeft;
+      var y = e.pageY - canvas.offsetTop;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 100, 0, 2 * Math.PI);
+      ctx.fill();
+
     })
-
-
+  })
+  //用这个链式编程 当鼠标按下移动到画布以外再松手 再进去画布里面的时候还会接着涂改 所以抬起事件要社给window
+  // .on('mouseup',function(){
+  //   //鼠标抬起的时候清除mousemove事件
+  //   $(this).off('mousemove');
+  // }) 
+  $(window).on("mouseup", function () {
+    $(canvas).off("mousemove")
+  })
 </script>
